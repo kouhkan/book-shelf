@@ -40,3 +40,15 @@ func CreateNewBook(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"data": book})
 
 }
+
+// Find by id
+func FindBookById(c *gin.Context){
+	var book models.Book
+
+	if err := models.DB.Where("id= ?", c.Param("id")).First(&book).Error; err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Book Not Found!"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": book})
+}

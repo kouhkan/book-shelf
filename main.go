@@ -19,6 +19,7 @@ func main() {
 	models.ConnectToDatabase()
 
 	r.GET("/books", controllers.FindAllBook)
+	r.GET("/books/:id", controllers.FindBookById)
 	r.POST("/books", controllers.CreateNewBook)
 
 	r.Run(":8081")
