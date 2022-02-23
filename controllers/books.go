@@ -7,9 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// For create a new book
 type CreateBookInput struct {
 	Title  string `json:"title" binding:"required"`
 	Author string `json:"author" binding:"required"`
+}
+
+// For update a book
+type UpdateBookInput struct {
+	Title  string `json:"title"`
+	Author string `json:"author"`
 }
 
 // GET all books
@@ -51,4 +58,36 @@ func FindBookById(c *gin.Context){
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": book})
+}
+
+// Update book with id
+func UpdateBookById(c *gin.Context) {
+	var book models.Book
+
+	if err := models.DB.Where("id=?", c.Param("id")).First(&book).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Book Not Found!"})
+		return
+	}
+
+	var input UpdateBookInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return 
+	}
+
+	models.DB.Model(&book).Updates(input)
+	c.JSON(http.StatusAccepted, gin.H{"data": book})
+}
+
+// Delete book with id
+func DeleteBookById(c *gin.Context) {
+	var book models.Book
+
+	if err := models.DB.Where("id=?", c.Param("id")).First(&book).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Book Not Found!"})
+		return 
+	}
+
+	models.DB.Delete(&book)
+	c.JSON(http.StatusOK, gin.H{"data": "Deleted!"})
 }

@@ -21,6 +21,8 @@ func main() {
 	r.GET("/books", controllers.FindAllBook)
 	r.GET("/books/:id", controllers.FindBookById)
 	r.POST("/books", controllers.CreateNewBook)
+	r.PATCH("/books/:id", controllers.UpdateBookById)
+	r.DELETE("/books/:id", controllers.DeleteBookById)
 
 	r.Run(":8081")
 }
